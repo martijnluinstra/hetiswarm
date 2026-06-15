@@ -12,18 +12,71 @@
         html, body {
             width: 100%;
             height: 100%;
+            transition: background-color 1s ease;
         }
 
         body {
             padding: 0;
             margin: 0;
-            background: #ddd; 
+            background: linear-gradient(to bottom, #cce6ff, #ffcc99);
             color:black;
             font: 14px Verdana, sans-serif;
             display: flex;
             flex-direction: column;
         }
 
+        .temperature-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .temperature-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .temperature-slider {
+            width: 250px;
+            height: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, #4da6ff, #ff6600);
+            outline: none;
+            border-radius: 10px;
+        }
+
+        .temperature-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #333;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .temperature-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 5px;
+            color: #555;
+            font-size: 12px;
+        }
 
         svg {
             shape-rendering: geometricPrecision;
@@ -103,13 +156,38 @@
         .btn:hover {
             background: #111;
         }
+        
+        .temperature-indicator {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
+<div class="temperature-container">
+    <div class="temperature-display">Temperatuur: <span id="temp-value">20°C</span></div>
+    <input type="range" min="15" max="35" value="20" class="temperature-slider" id="temp-slider">
+    <div class="temperature-labels">
+        <span>15°C</span>
+        <span>25°C</span>
+        <span>35°C</span>
+    </div>
+</div>
+<div class="temperature-indicator" id="temp-indicator"></div>
+
 <div class="container">
     <svg id="fan" role="img" class="fan" data-speed="1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" viewBox="0 0 17293 17293">
         <title>Animatie van een ventilator</title>
-        <path class="fil0" d="M8890 6064c-84,428 -79,862 -64,1252 261,36 504,144 704,318l197 -203c1172,-1212 2441,-2524 4007,-2573 728,-23 1417,197 1989,591 582,402 1042,984 1297,1674 554,1502 200,2994 -480,3934 -230,317 -497,572 -779,744 -284,173 -584,262 -877,246 -474,-26 -928,-327 -1264,-989 -158,-311 -332,-592 -518,-844 -196,-267 -406,-501 -625,-706 -377,-354 -810,-532 -1247,-617 -428,-84 -862,-79 -1252,-64 -36,259 -147,506 -319,704 62,60 132,128 203,197 1212,1172 2524,2441 2573,4007 23,728 -197,1417 -591,1989 -402,582 -984,1042 -1674,1297 -1502,554 -2994,200 -3934,-480 -317,-230 -572,-497 -744,-779 -173,-284 -262,-584 -246,-877 26,-474 327,-928 989,-1264 311,-158 592,-332 844,-518 267,-196 501,-406 706,-625 354,-377 532,-810 617,-1247 84,-428 79,-862 64,-1252 -262,-36 -505,-145 -704,-319l-197 203c-1172,1212 -2441,2524 -4007,2573 -728,23 -1417,-197 -1989,-591 -582,-402 -1042,-984 -1297,-1674 -554,-1502 -200,-2994 480,-3934 230,-317 497,-572 779,-744 284,-173 584,-262 877,-246 474,26 928,327 1264,989 158,311 332,592 518,844 196,267 406,501 625,706 377,354 810,532 1248,617 428,84 862,79 1252,64 35,-262 142,-502 318,-704 -61,-59 -132,-128 -203,-197 -1212,-1172 -2524,-2441 -2573,-4007 -23,-728 197,-1417 591,-1989 402,-582 984,-1042 1674,-1297 1502,-554 2994,-200 3934,480 317,230 572,497 744,779 173,284 262,584 246,877 -26,474 -327,928 -989,1264 -311,158 -592,332 -844,518 -267,196 -501,406 -706,625 -354,377 -532,810 -618,1248zm-662 1932c-359,231 -463,710 -231,1069 231,359 710,463 1069,231 359,-231 463,-710 231,-1069 -231,-359 -710,-463 -1069,-231z">
+        <path class="fil0" d="M8890 6064c-84,428 -79,862 -64,1252 261,36 504,144 704,318l197 -203c1172,-1212 2441,-2524 4007,-2573 728,-23 1417,197 1989,591 582,402 1042,984 1297,1674 554,1502 200,2994 -480,3934 -230,317 -497,572 -779,744 -284,173 -584,262 -877,246 -474,-26 -928,-327 -1264,-989 -158,-311 -332,-592 -518,-844 -196,-267 -406,-501 -625,-706 -377,-354 -810,-532 -1247,-617 -428,-84 -862,-79 -1252,-64 -36,259 -147,506 -319,704 62,60 132,128 203,197 1212,1172 2524,2441 2573,4007 23,728 -197,1417 -591,1989 -402,582 -984,1042 -1674,1297 -1502,554 -2994,200 -3934,-480 -317,-230 -572,-497 -744,-779 -173,-284 -262,-584 -246,-877 26,-474 327,-928 989,-1264 311,-158 592,-332 844,-518 267,-196 501,-406 706,-625 -354,-377 -532,-810 -617,-1247 84,-428 79,-862 64,-1252 -262,-36 -505,-145 -704,-319l-197 203c-1172,1212 -2441,2524 -4007,2573 -728,23 -1417,-197 -1989,-591 -582,-402 -1042,-984 -1297,-1674 -554,-1502 -200,-2994 480,-3934 230,-317 497,-572 779,-744 284,-173 584,-262 877,-246 474,26 928,327 1264,989 158,311 332,592 518,844 196,267 406,501 625,706 377,354 810,532 1248,617 428,84 862,79 1252,64 35,-262 142,-502 318,-704 -61,-59 -132,-128 -203,-197 -1212,-1172 -2524,-2441 -2573,-4007 -23,-728 197,-1417 591,-1989 402,-582 984,-1042 1674,-1297 1502,-554 2994,-200 3934,480 317,230 572,497 744,779 173,284 262,584 246,877 -26,474 -327,928 -989,1264 -311,158 -592,332 -844,518 -267,196 -501,406 -706,625 -354,377 -532,810 -618,1248zm-662 1932c-359,231 -463,710 -231,1069 231,359 710,463 1069,231 359,-231 463,-710 231,-1069 -231,-359 -710,-463 -1069,-231z">
             <animateTransform
                 id="fan-animation"
                 attributeName="transform"
@@ -138,6 +216,62 @@
     const svg = document.getElementById('fan');
     const animation = document.getElementById('fan-animation');
     const buttons = document.querySelectorAll('.controls .btn');
+    const tempSlider = document.getElementById('temp-slider');
+    const tempValue = document.getElementById('temp-value');
+    const tempIndicator = document.getElementById('temp-indicator');
+    const body = document.body;
+
+    // Temperature slider functionality
+    tempSlider.addEventListener('input', function() {
+        const temp = parseInt(this.value);
+        tempValue.textContent = `${temp}°C`;
+        
+        // Update background color based on temperature
+        if (temp < 20) {
+            body.style.background = 'linear-gradient(to bottom, #cce6ff, #a3d5ff)';
+        } else if (temp < 25) {
+            body.style.background = 'linear-gradient(to bottom, #cce6ff, #ffcc99)';
+        } else {
+            body.style.background = 'linear-gradient(to bottom, #ffcc99, #ff9966)';
+        }
+        
+        // Adjust fan speed based on temperature
+        let speed = "5s";
+        if (temp > 25) {
+            speed = "2s";
+        }
+        if (temp > 30) {
+            speed = "1s";
+        }
+        
+        // Only change if not turned off
+        const activeButton = document.querySelector('.btn.is-active');
+        if (activeButton && activeButton.dataset.speed) {
+            updateFanSpeed(speed);
+            
+            // Update button states
+            buttons.forEach(btn => {
+                btn.classList.remove('is-active');
+                if (btn.dataset.speed === speed) {
+                    btn.classList.add('is-active');
+                }
+            });
+        }
+        
+        // Show temperature indicator
+        tempIndicator.textContent = `Het is nu ${temp}°C`;
+        tempIndicator.style.opacity = '1';
+        setTimeout(() => {
+            tempIndicator.style.opacity = '0';
+        }, 2000);
+    });
+
+    function updateFanSpeed(speed) {
+        const offset = ((animation.getCurrentTime() / animation.getSimpleDuration()) % 1);
+        animation.setAttribute('dur', speed);
+        svg.setCurrentTime(parseFloat(speed.replace('s', '')) * offset);
+        svg.unpauseAnimations();
+    }
 
     buttons.forEach(function(button) {
         button.addEventListener('click', function() {
@@ -151,11 +285,7 @@
             if (!button.dataset.speed) {
                 svg.pauseAnimations();
             } else {
-                // Offset timing to prevent position jumping
-                const offset = ((animation.getCurrentTime() / animation.getSimpleDuration()) % 1);
-                animation.setAttribute('dur', button.dataset.speed);
-                svg.setCurrentTime(parseFloat(button.dataset.speed) * offset);
-                svg.unpauseAnimations();
+                updateFanSpeed(button.dataset.speed);
             }
         });
     });
